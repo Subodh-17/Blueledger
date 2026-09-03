@@ -21,7 +21,7 @@ Built for the National Centre for Coastal Research (NCCR), India.
 
 1. Open `frontend/admin/index.html` in Chrome
 2. Open `frontend/mobile/index.html` in another tab (same browser)
-3. Admin key: **`NCCR2024ADMIN`**
+3. Configure your `ADMIN_KEY` in `backend/.env` (see `docs/SETUP.md`)
 
 See `docs/SETUP.md` for full stack setup with Node.js + PostgreSQL.
 
@@ -31,7 +31,7 @@ See `docs/SETUP.md` for full stack setup with Node.js + PostgreSQL.
 
 | Item | Value |
 |------|-------|
-| Admin Key | `NCCR2024ADMIN` |
+| Admin Key | Set via `ADMIN_KEY` environment variable |
 | API Port | `3001` |
 | Blockchain | Hardhat Testnet (Chain ID 31337) |
 | Token | BCT — 1 token = 1 tonne CO₂e |

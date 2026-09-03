@@ -60,7 +60,7 @@ Just open the HTML files directly in your browser — no installation required.
 2. Open `frontend/mobile/index.html` in another tab in the **same browser**
 3. Both share `localStorage` — data syncs automatically across tabs
 
-**Admin Key:** `NCCR2024ADMIN`
+**Admin Key:** Set via `ADMIN_KEY` in `backend/.env`
 
 ---
 
@@ -86,7 +86,7 @@ Edit `.env`:
 ```env
 PORT=3001
 JWT_SECRET=anylongrandomstring123
-ADMIN_KEY=NCCR2024ADMIN
+ADMIN_KEY=your_admin_registration_passphrase_here
 ```
 
 ### Step 3 — Start the backend (serves frontend too)
@@ -130,7 +130,7 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 
 JWT_SECRET=your_long_random_secret
-ADMIN_KEY=NCCR2024ADMIN
+ADMIN_KEY=your_admin_registration_passphrase_here
 
 ETH_RPC_URL=http://127.0.0.1:8545
 PRIVATE_KEY=your_wallet_private_key
@@ -161,7 +161,7 @@ User (Mobile App)                     Admin (Dashboard)
 
 ## Admin Key
 
-The admin key (`NCCR2024ADMIN`) is required to create admin/verifier accounts.  
+The admin key is required to create admin/verifier accounts during registration.  
 To change it, update `ADMIN_KEY` in `backend/.env` (full-stack) or  
 `const ADMIN_KEY = '...'` in `frontend/admin/index.html` (standalone).
 

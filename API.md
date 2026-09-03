@@ -24,7 +24,7 @@ Register a new user account.
   "password": "securepassword",
   "role": "ngo_worker",
   "organisation": "WWF India",
-  "adminKey": "NCCR2024ADMIN"   // required only for admin/verifier roles
+  "adminKey": "YOUR_ADMIN_KEY"   // required only for admin/verifier roles
 }
 ```
 
