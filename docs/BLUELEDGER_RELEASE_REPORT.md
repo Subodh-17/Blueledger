@@ -17,12 +17,12 @@
 | **GitHub Rename** | **PASS** | Repository renamed in-place via GitHub CLI API (`gh repo rename Blueledger -R Subodh-17/WCEHackathon2026_Proteas -y`). Verified canonical URL: `https://github.com/Subodh-17/Blueledger`. | All historical issues, PRs, and commit history preserved. |
 | **Local-to-Remote Sync** | **PASS** | Synchronized local V3 Increment 4 verified workspace to GitHub `main` branch with clean fast-forward commit on top of remote baseline `99f3f1ba4938d7a801badf1e16266ebea22fda73`. Zero force-push. | Remote tracking branch linked to `origin/main`. |
 | **Smart Contracts** | **PASS** | `npm --prefix blockchain test`: **50 passing (100%)**, 0 failing, 0 skipped in 2.0s. All role handovers, batch freezing, adversarial cancellations, and supply invariants verified. | Evaluated on local Hardhat EVM network; mainnet deployment withheld by policy. |
-| **Backend Tests** | **PASS** | `npm --prefix backend test`: **196 passing (100%)**, 0 failing, 0 skipped across all 23 test suites in 279.3s. | Requires PostgreSQL 16+ and Node 22+. |
+| **Backend Tests** | **PASS** | `npm --prefix backend test`: **196 passing (100%)**, 0 failing across all test suites; Hosted CI run `40312609475` verified 100% green. | Requires PostgreSQL 16+ and Node 22+. |
 | **Frontend Verification** | **PASS** | `node scripts/check-frontend.js`: 23 files, 19 ES modules, zero external origins, zero inline styles, 23 color pairs pass WCAG AA contrast. | Plain ES-module SPA served without bundler overhead. |
-| **Android Subsystem** | **PASS** | Gradle 8.9 wrapper verified; `.\gradlew.bat test` passed **16 unit tests** (8 debug, 8 release); `.\gradlew.bat assembleDebug` built `app-debug.apk` (21,451,738 bytes, SHA-256 verified). | Physical device testing marked pending connected device (`adb devices` empty). |
+| **Android Subsystem** | **PASS** | Gradle 8.9 wrapper verified; `.\gradlew.bat test` passed **16 unit tests**; `.\gradlew.bat assembleDebug` built `app-debug.apk` (21,451,738 bytes, SHA-256 verified); CI build verified. | Physical device testing marked pending connected device (`adb devices` empty). |
 | **Dependency Audit** | **PASS** | `npm --prefix blockchain audit --audit-level=high` exited with code `0`. Production-only audit `npm --prefix blockchain audit --omit=dev` reported **0 vulnerabilities**. Overrides (`ws`, `adm-zip`, `serialize-javascript`, `tmp`, `undici`) verified. | 36 moderate/low advisories remain strictly within offline devDependencies (`hardhat`, `mocha`, `solidity-coverage`). |
-| **Render Deployment** | **PROVISIONED (Service Assigned: `blueledger-backend-k4rg`)** | GitHub Deployment `7329163577` verified. Canonical service URL assigned by Render: `https://blueledger-backend-k4rg.onrender.com` (`srv-dbfi3su7bikc73dld8c0`). Configured with Supabase Free PostgreSQL. | Free plan cold-starts (30-50s) after 15m idle. |
-| **Vercel Deployment** | **PASS (Deployed & Live)** | Production frontend successfully deployed to Vercel at [https://blueledger-sigma.vercel.app](https://blueledger-sigma.vercel.app) (Project: `subodhs-projects-c39a0359/blueledger`, Deployment ID: `dpl_2NZEHCs4HbjQehUzVJVRujmigzQu`). Verified HTTP 200 OK. | Configured to proxy `/api/*` to backend. |
+| **Render Deployment** | **BUILDING / QUEUED (Service Assigned: `blueledger-backend-k4rg`)** | Canonical service URL: `https://blueledger-backend-k4rg.onrender.com` (`srv-dbfi3su7bikc73dld8c0`, Deploy: `dep-dbfj8kjphbkc73ag63n0`). Runtime migrations configured on boot with 10s connection timeout. | Free plan build queue concurrency limits on Render free accounts. |
+| **Vercel Deployment** | **PASS (Deployed & Live)** | Production frontend successfully deployed to Vercel at [https://blueledger-sigma.vercel.app](https://blueledger-sigma.vercel.app) (Project: `subodhs-projects-c39a0359/blueledger`, Deployment ID: `dpl_BTLSKNhetbGz5JykLVPZGNFP1Gz2`). Verified HTTP 200 OK with security headers. | Configured to proxy `/api/*` to Render backend. |
 | **MRV Calculation** | **PASS** | First-principles full-precision recomputation verified: Central gross ($3,033.32\text{ tCO}_2\text{e}$), Lower bound ($2,650.24\text{ tCO}_2\text{e}$), Net buffered ($2,252.70\text{ tCO}_2\text{e} \to \mathbf{2,252}\text{ credits}$ for 1.0000 yr; $\mathbf{9,010}\text{ credits}$ for 4-yr cycle). Verified in `backend/tests/carbon.test.js`. | Tier 1 defaults require site-specific empirical calibration prior to operational accreditation. |
 | **Scientific Governance** | **PENDING** | Methodology status strictly flagged `PENDING_REVIEW` in software state. Issuance gate `issuability()` strictly blocks credit tokenization without independent accreditation. | Awaiting independent scientific verification body engagement. |
 
@@ -32,6 +32,13 @@
 
 * **Remote Origin:** `https://github.com/Subodh-17/Blueledger.git`
 * **Default Branch:** `main`
+* **Latest Release Commit:** `c599ddddb324d4b45eabbfedf3e1a97a37e28f12` (fix: initialize blockchain before binding listener and guard runtime migrations against test runner)
+* **Hosted CI Run:** `40312609475` — **100% PASS** across all 5 jobs in 4m 52s
+  - Security & Secret Scan: PASS
+  - Backend Test Suite & Migrations: PASS (196/196 tests passing)
+  - Android Field App Build & Unit Tests: PASS (16 tests + debug APK generated)
+  - Frontend Lint & Integrity Checks: PASS (23 static files, 19 modules)
+  - Smart Contracts & Verification: PASS (50/50 Solidity tests)
 * **Baseline Remote Commit:** `99f3f1ba4938d7a801badf1e16266ebea22fda73` (docs: remove hardcoded NCCR2024ADMIN passphrase)
 * **Secret Hygiene Audit:**
   - Automated regex scans verified 0 private keys, 0 mnemonic seed phrases, 0 credentials staged.
