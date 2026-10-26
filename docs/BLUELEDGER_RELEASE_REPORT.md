@@ -49,7 +49,7 @@ services:
   - type: web
     name: blueledger-backend
     runtime: node
-    plan: starter
+    plan: free
     region: oregon
     buildCommand: npm --prefix backend ci && node database/migrate.js
     startCommand: npm --prefix backend start
@@ -83,7 +83,7 @@ databases:
   - name: blueledger-db
     databaseName: blue_carbon_mrv
     user: blueledger_user
-    plan: starter
+    plan: free
     region: oregon
 ```
 
