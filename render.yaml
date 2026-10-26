@@ -15,13 +15,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: blueledger-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        sync: false
+        value: https://blueledger-sigma.vercel.app
       - key: CHAIN_MODE
         value: local
       - key: ALLOW_LOCAL_CHAIN
@@ -34,10 +32,3 @@ services:
         value: "off"
       - key: MAX_UPLOAD_MB
         value: "25"
-
-databases:
-  - name: blueledger-db
-    databaseName: blue_carbon_mrv
-    user: blueledger_user
-    plan: free
-    region: oregon

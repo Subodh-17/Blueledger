@@ -11,6 +11,9 @@ const { Pool } = req("pg");
 
 async function migrate({ reset = false, pool: given } = {}) {
   const connectionString = process.env.DATABASE_URL;
+  if (process.env.NODE_ENV === "production" && !connectionString && !process.env.DB_HOST) {
+    throw new Error("DATABASE_URL is not set in production. Please configure your PostgreSQL connection string (e.g. Supabase URI) in the service environment variables.");
+  }
   const pool = given || new Pool(
     connectionString
       ? { connectionString, ssl: !connectionString.includes("localhost") && !connectionString.includes("127.0.0.1") ? { rejectUnauthorized: false } : undefined }

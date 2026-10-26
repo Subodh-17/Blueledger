@@ -92,68 +92,46 @@
 
 ## 4. Step-by-Step Deployment Guide & Dashboard Safety Instructions
 
-### Option A: Deploying via Render Free Blueprint (Turnkey $0)
+Because Render restricts accounts to strictly 1 active free database (which caused the initial Blueprint sync error `blueledger-db: cannot have more than one active free tier database`), `render.yaml` has been updated to decouple the backend service from Render-managed databases.
 
-1. Open [https://dashboard.render.com/blueprints/new](https://dashboard.render.com/blueprints/new).
-2. Connect or select repository: `Subodh-17/Blueledger`.
-3. Render will read `render.yaml` (configured with `plan: free` for both `blueledger-backend` and `blueledger-db`).
-4. **CRITICAL ACCEPTANCE GATE:**
-   - Look at the **"Estimated Monthly Cost"** displayed at the top or bottom of the Blueprint review page.
-   - **It MUST say `$0.00`**.
-   - If the dashboard displays `$7.00/month`, `$14.00/month`, asks you to enter credit card details, or states *"You have already used your free database"*, **DO NOT CLICK APPLY**. Instead, cancel and follow Option B below.
-5. If it displays `$0.00`, click **Apply**.
-6. Render will provision `blueledger-db` and deploy `blueledger-backend`.
+### Recommended Path: Render Free Web Service + Supabase Free Database
 
----
-
-### Option B: Deploying with Supabase Free Database (Permanent $0 Alternative)
-
-If Render asks for payment due to the 1-free-database limit or if you want permanent data storage without the 30-day deletion:
-
-1. **Create Supabase Account & Project:**
-   - Go to [https://supabase.com](https://supabase.com) and sign in with GitHub (no credit card required).
+1. **Create Supabase Account & Project (2 minutes, strictly $0, no CC required):**
+   - Go to [https://supabase.com](https://supabase.com) and sign in with GitHub.
    - Click **New project**, choose an organization, set project name: `blueledger-db`.
    - Set a secure database password (save this securely).
-   - Choose region: `US East (N. Virginia)` or closest to your Render service (`Oregon`).
+   - Choose region: `US East (N. Virginia)` or `Oregon` (closest to Render's Oregon region).
    - Pricing Plan: Verify **Free Tier ($0/month)** is selected. Click **Create new project**.
 
-2. **Obtain Connection String:**
+2. **Obtain Supabase Connection String:**
    - In Supabase dashboard: Navigate to **Project Settings** (gear icon) -> **Database**.
    - Scroll down to **Connection parameters** -> **Connection string** tab.
    - Select **URI** mode.
-   - Under Mode, choose **Session (Port 5432)** or **Transaction (Port 6543)**.
-   - Example URI:
+   - Under Mode, choose **Transaction (Port 6543)** or **Session (Port 5432)**.
+   - Copy URI:
      ```
-     postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+     postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-[region].pooler.supabase.com:6543/postgres
      ```
-   - Replace `[YOUR-PASSWORD]` with the database password you chose.
+   - Replace `[YOUR-PASSWORD]` with your actual database password.
 
-3. **Deploy Web Service on Render (Without Render Database):**
-   - On Render: Navigate to [https://dashboard.render.com/web/new](https://dashboard.render.com/web/new).
-   - Select `Subodh-17/Blueledger`.
-   - Configure Web Service:
-     - **Name:** `blueledger-backend`
-     - **Runtime:** `Node`
-     - **Plan:** `Free` ($0/mo)
-     - **Region:** `Oregon`
-     - **Build Command:** `npm --prefix backend ci && node database/migrate.js`
-     - **Start Command:** `npm --prefix backend start`
-     - **Health Check Path:** `/health`
-   - Under **Environment Variables**, add:
-     - `NODE_ENV` = `production`
-     - `DATABASE_URL` = `<your-supabase-connection-uri>`
-     - `JWT_SECRET` = `<click Generate Value or enter a 32+ char random string>`
-     - `CHAIN_MODE` = `local`
-     - `ALLOW_LOCAL_CHAIN` = `1`
-     - `IPFS_PROVIDER` = `none`
-     - `MALWARE_SCAN` = `optional`
-     - `EVIDENCE_ENCRYPTION` = `off`
-     - `MAX_UPLOAD_MB` = `25`
-   - Click **Create Web Service** (Cost: $0.00).
+3. **Deploy via Render Blueprint (or Render Dashboard):**
+   - Open your existing [Render Blueprint](https://dashboard.render.com/blueprints).
+   - Click **Sync** (or create Blueprint pointing to `Subodh-17/Blueledger`).
+   - Render now provisions **only** `blueledger-backend` (Web Service, Free plan, $0.00/mo).
+   - When prompted for `DATABASE_URL` (due to `sync: false`), paste your Supabase connection string.
+   - **Cost Check:** Estimated Monthly Cost must show **$0.00**.
+   - Render will build the backend, automatically execute `node database/migrate.js` over SSL to create all tables and indices in Supabase, and start the service.
 
-4. **Run Migrations Automatically:**
-   - Because `node database/migrate.js` is included in the Render Build Command, Render will automatically connect to your Supabase PostgreSQL database during the build and apply all 11 schema migrations safely over SSL (`rejectUnauthorized: false`).
-   - Schema, tables, triggers, and indices are preserved 100% identically.
+4. **Verify Backend Health:**
+   - Note the assigned Render URL (e.g., `https://blueledger-backend-xxxx.onrender.com`).
+   - Probe `/health`:
+     ```bash
+     curl -s https://<assigned-render-url>/health
+     ```
+     Response will return:
+     ```json
+     {"status":"ok","database":"connected","ts":"..."}
+     ```
 
 ---
 
