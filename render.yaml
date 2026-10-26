@@ -1,0 +1,43 @@
+# Render Blueprint Infrastructure-as-Code Specification for BlueLedger
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: blueledger-backend
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm --prefix backend ci && node database/migrate.js
+    startCommand: npm --prefix backend start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blueledger-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: CHAIN_MODE
+        value: local
+      - key: ALLOW_LOCAL_CHAIN
+        value: "1"
+      - key: IPFS_PROVIDER
+        value: none
+      - key: MALWARE_SCAN
+        value: optional
+      - key: EVIDENCE_ENCRYPTION
+        value: off
+      - key: MAX_UPLOAD_MB
+        value: "25"
+
+databases:
+  - name: blueledger-db
+    databaseName: blue_carbon_mrv
+    user: postgres
+    plan: starter
+    region: oregon

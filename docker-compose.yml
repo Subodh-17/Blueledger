@@ -1,0 +1,46 @@
+# Production-ready Docker Compose for SIH25038 Blue Carbon Registry & MRV System
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blue_carbon_mrv
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - bcmrv_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blue_carbon_mrv"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: blue_carbon_mrv
+      DB_USER: postgres
+      DB_PASSWORD: devpassword
+      JWT_SECRET: production-grade-docker-secret-change-in-real-deployment-32chars
+      UPLOAD_DIR: /app/uploads
+      IPFS_PROVIDER: none
+    ports:
+      - "4000:4000"
+    volumes:
+      - bcmrv_uploads:/app/uploads
+
+volumes:
+  bcmrv_pg:
+  bcmrv_uploads:

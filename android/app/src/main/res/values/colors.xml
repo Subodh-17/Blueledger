@@ -1,0 +1,12 @@
+<resources>
+    <color name="teal_primary">#00796B</color>
+    <color name="teal_secondary">#004D40</color>
+    <color name="teal_accent">#80CBC4</color>
+    <color name="background_light">#F5F7F8</color>
+    <color name="surface_white">#FFFFFF</color>
+    <color name="text_primary">#1C2526</color>
+    <color name="text_secondary">#546E7A</color>
+    <color name="warn_amber">#FF8F00</color>
+    <color name="ok_green">#2E7D32</color>
+    <color name="bad_red">#C62828</color>
+</resources>

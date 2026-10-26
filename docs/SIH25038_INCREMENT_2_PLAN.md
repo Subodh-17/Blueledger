@@ -1,0 +1,15 @@
+# SIH25038 increment 2 — plan
+
+Audit result (from the code, not the documents): increment 1 delivered the reporting **API** (no screen), the V3 assessment page fix, and test/doc updates. Still missing or partial: a reporting page; any GeoJSON ingestion; project-boundary containment (records are only checked to be within 25 km of the project's centre point; `projects.geometry` is validated as a Polygon shape only); structured species; dispute handling; contract-level cancellation; a single automated journey covering onboarding to reports; real-browser tests. The workspace is not a Git repository, so there is no Git status or diff to read; `V3-PROGRESS.md` is at the repository root.
+
+Order of work (each step ends with tests before the next starts):
+1. **Registry reporting page** (`#/reports`, new navigation entry for every role; the API already scopes field users). Filters, definitions of each quantity, loading / empty / error / retry states, CSV download through the authenticated API, tests in the jsdom UI suite.
+2. **Geospatial evidence ingestion.** Pure validator (`services/geo.js`): JSON and size limits, geometry types, coordinate ranges, CRS, ring closure and self-intersection, containment in the project boundary (with an explicit `NO_BOUNDARY` result when the project has none), property checks. New evidence kind `GEOSPATIAL`, table `geospatial_imports` written in the same transaction as the evidence row, dry-run endpoint, structured per-record species and planting counts (`record_species`) with a consistency check against the `seedlings_planted` measurement. Migration 009. Evidence page gets an import form.
+3. **Credit lifecycle.** Disputes with review history as an off-chain registry control (`credit_disputes`, migration 010) that blocks transfer and retirement through the API while open; it is labelled as not freezing the on-chain token. Contract-level cancellation is **proposed with tests but not wired into the backend or deployed**; no off-chain "reversal" is presented as reversing an on-chain transaction.
+4. **End-to-end journey test** (API level against the real database, evidence storage and local chain, plus the jsdom UI for the reporting step) and a real-browser run if Chromium is available.
+5. Security / dependency / secret checks, documentation, traceability update.
+
+Constraints observed: no public deployment, no key changes, destructive tests only against disposable databases, no commit / push, no ZIP unless requested, `.env*` untouched.
+
+## Outcome against this plan (added at the end of the increment)
+All five steps were carried out; see `SIH25038_INCREMENT_2_REPORT.md` and `SIH25038_INCREMENT_2_TEST_REPORT.md`. Deviations: (a) a real-browser suite was possible after all (Chromium and Playwright were present) and was added in `e2e/`; (b) running the journey found a defect in recovery (recovered operations lost their transaction hash) and one in the front-end router (stale pages overwriting the current page), both fixed with regression tests; (c) the cancellation contract change stayed a proposal, as planned.

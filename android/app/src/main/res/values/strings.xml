@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Blue Carbon MRV</string>
+    <string name="login_title">Field Officer Sign In</string>
+    <string name="email_label">Official Email</string>
+    <string name="password_label">Password</string>
+    <string name="login_button">Sign In</string>
+    <string name="projects_title">Assigned Projects</string>
+    <string name="new_record_title">New Field Plot Survey</string>
+    <string name="capture_evidence_title">Capture Evidence</string>
+    <string name="sync_status_title">Offline Sync Queue</string>
+    <string name="sync_now">Sync Pending Items</string>
+</resources>

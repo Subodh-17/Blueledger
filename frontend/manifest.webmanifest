@@ -1,0 +1,11 @@
+{
+  "name": "Blue Carbon Registry",
+  "short_name": "Carbon Registry",
+  "description": "Field data, evidence and registry views for blue-carbon restoration monitoring.",
+  "start_url": "./#/field",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1ea",
+  "theme_color": "#0b2237",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

@@ -1,0 +1,14 @@
+node_modules/
+.env
+*.log
+backend/uploads/*
+!backend/uploads/.gitkeep
+blockchain/artifacts/
+blockchain/cache/
+blockchain/deployments/
+blockchain/typechain-types/
+coverage/
+.DS_Store
+android/local.properties
+android/.gradle/
+android/**/build/
