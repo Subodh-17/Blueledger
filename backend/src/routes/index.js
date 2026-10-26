@@ -354,7 +354,10 @@ router.get("/settings/history", ...auth, requireRole(ADMIN), wrap(async (req, re
 router.put("/settings/:key", ...auth, requireRole(ADMIN), wrap(async (req, res) => res.json(await settings.set(req.user, req.params.key, req.body?.value, req.body?.reason))));
 router.delete("/settings/:key", ...auth, requireRole(ADMIN), wrap(async (req, res) => res.json(await settings.reset(req.user, req.params.key, req.body?.reason))));
 router.get("/chain/roles", ...auth, requireRole(ADMIN), wrap(async (_req, res) => {
-  const r = await chain.roleHolders(); const wallets = (await db.query("SELECT lower(wallet_address) AS w, name, role FROM users WHERE wallet_address IS NOT NULL")).rows;
+  const auditCandidates = (await db.query("SELECT DISTINCT details->>'account' AS account, details->>'role' AS role FROM audit_logs WHERE action='CHAIN_ROLE_CHANGED' AND details->>'account' IS NOT NULL")).rows;
+  const wallets = (await db.query("SELECT lower(wallet_address) AS w, name, role FROM users WHERE wallet_address IS NOT NULL")).rows;
+  const userCandidates = wallets.map((u) => ({ account: u.w, role: u.role === "VERIFIER" ? "verifier" : "registrar" }));
+  const r = await chain.roleHolders([...auditCandidates, ...userCandidates]);
   const owner = (a) => wallets.find((u) => u.w === String(a).toLowerCase());
   res.json({ ...r, holders: r.holders.map((h) => ({ ...h, user: owner(h.account) ? { name: owner(h.account).name, role: owner(h.account).role } : null })), adminUser: owner(r.admin)?.name || null });
 }));

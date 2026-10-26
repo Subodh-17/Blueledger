@@ -207,14 +207,33 @@ class ChainService {
     return this.submit("admin", adminWallet, "cancelCredits", [recordId32, holderWallet, amount, caseHash32, ref]);
   }
   proposeAdmin(account) { return this.submit("admin", null, "proposeAdmin", [account]); }
-  /** Current on-chain role holders, reconstructed from RoleChanged events and confirmed against the contract. */
-  async roleHolders() {
+  /** Current on-chain role holders, reconstructed from RoleChanged events and candidate wallets, confirmed live against the contract. */
+  async roleHolders(extraCandidates = []) {
     await this.ensure();
     try {
-      const evs = await this.readContract.queryFilter(this.readContract.filters.RoleChanged(), this.deployBlock || 0);
-      const seen = new Map(); for (const e of evs) seen.set(`${e.args.role}:${e.args.account.toLowerCase()}`, { role: e.args.role, account: e.args.account });
+      const seen = new Map();
+      const evs = await this.readContract.queryFilter(this.readContract.filters.RoleChanged(), 0).catch(() => []);
+      for (const e of evs) {
+        if (e.args?.role && e.args?.account) {
+          seen.set(`${e.args.role}:${e.args.account.toLowerCase()}`, { role: e.args.role, account: e.args.account });
+        }
+      }
+      for (const c of extraCandidates) {
+        if (c?.role && c?.account) {
+          seen.set(`${c.role}:${c.account.toLowerCase()}`, { role: c.role, account: c.account });
+        }
+      }
+      if (Array.isArray(this.deployment?.verifiers)) {
+        for (const v of this.deployment.verifiers) if (v) seen.set(`verifier:${v.toLowerCase()}`, { role: "verifier", account: v });
+      }
+      if (this.deployment?.registrar) {
+        seen.set(`registrar:${this.deployment.registrar.toLowerCase()}`, { role: "registrar", account: this.deployment.registrar });
+      }
       const holders = [];
-      for (const h of seen.values()) { const on = h.role === "verifier" ? await this.readContract.isVerifier(h.account) : await this.readContract.isRegistrar(h.account); if (on) holders.push(h); }
+      for (const h of seen.values()) {
+        const on = h.role === "verifier" ? await this.readContract.isVerifier(h.account) : await this.readContract.isRegistrar(h.account);
+        if (on) holders.push(h);
+      }
       return { admin: await this.readContract.admin(), pendingAdmin: await this.readContract.pendingAdmin(), serviceRegistrar: await this.roles.registrar.getAddress(), holders };
     } catch (e) { throw classify(e); }
   }
