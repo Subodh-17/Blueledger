@@ -12,3 +12,6 @@ coverage/
 android/local.properties
 android/.gradle/
 android/**/build/
+
+.vercel
+.env*

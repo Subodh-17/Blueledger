@@ -21,7 +21,7 @@
 | **Frontend Verification** | **PASS** | `node scripts/check-frontend.js`: 23 files, 19 ES modules, zero external origins, zero inline styles, 23 color pairs pass WCAG AA contrast. | Plain ES-module SPA served without bundler overhead. |
 | **Android Subsystem** | **PASS** | Gradle 8.9 wrapper verified; `.\gradlew.bat test` passed **16 unit tests** (8 debug, 8 release); `.\gradlew.bat assembleDebug` built `app-debug.apk` (21,451,738 bytes, SHA-256 verified). | Physical device testing marked pending connected device (`adb devices` empty). |
 | **Dependency Audit** | **PASS** | `npm --prefix blockchain audit --audit-level=high` exited with code `0`. Production-only audit `npm --prefix blockchain audit --omit=dev` reported **0 vulnerabilities**. Overrides (`ws`, `adm-zip`, `serialize-javascript`, `tmp`, `undici`) verified. | 36 moderate/low advisories remain strictly within offline devDependencies (`hardhat`, `mocha`, `solidity-coverage`). |
-| **Render Deployment** | **PROVISIONED (Service Assigned: `blueledger-backend-d9e5`)** | GitHub Deployment `7328913352` verified. Canonical service URL assigned by Render: `https://blueledger-backend-d9e5.onrender.com` (`srv-dbfi8vm7bikc73dlub1g`). Configured with Supabase Free PostgreSQL. | Free plan cold-starts (30-50s) after 15m idle. |
+| **Render Deployment** | **PROVISIONED (Service Assigned: `blueledger-backend-k4rg`)** | GitHub Deployment `7329163577` verified. Canonical service URL assigned by Render: `https://blueledger-backend-k4rg.onrender.com` (`srv-dbfi3su7bikc73dld8c0`). Configured with Supabase Free PostgreSQL. | Free plan cold-starts (30-50s) after 15m idle. |
 | **Vercel Deployment** | **PASS (Deployed & Live)** | Production frontend successfully deployed to Vercel at [https://blueledger-sigma.vercel.app](https://blueledger-sigma.vercel.app) (Project: `subodhs-projects-c39a0359/blueledger`, Deployment ID: `dpl_2NZEHCs4HbjQehUzVJVRujmigzQu`). Verified HTTP 200 OK. | Configured to proxy `/api/*` to backend. |
 | **MRV Calculation** | **PASS** | First-principles full-precision recomputation verified: Central gross ($3,033.32\text{ tCO}_2\text{e}$), Lower bound ($2,650.24\text{ tCO}_2\text{e}$), Net buffered ($2,252.70\text{ tCO}_2\text{e} \to \mathbf{2,252}\text{ credits}$ for 1.0000 yr; $\mathbf{9,010}\text{ credits}$ for 4-yr cycle). Verified in `backend/tests/carbon.test.js`. | Tier 1 defaults require site-specific empirical calibration prior to operational accreditation. |
 | **Scientific Governance** | **PENDING** | Methodology status strictly flagged `PENDING_REVIEW` in software state. Issuance gate `issuability()` strictly blocks credit tokenization without independent accreditation. | Awaiting independent scientific verification body engagement. |
@@ -85,11 +85,11 @@ services:
 4. Native `/health` endpoint checks database connectivity (`SELECT 1`) and returns HTTP 200 `{ status: "ok", database: "connected" }`.
 
 ### Live Render Service Identification & Integration Details:
-* **Canonical Deployed Service URL:** `https://blueledger-backend-d9e5.onrender.com`
-* **Render Service ID:** `srv-dbfi8vm7bikc73dlub1g` (Environment: `main - blueledger-backend-d9e5`)
-* **Discovered via:** GitHub Deployment API (ID: `7328913352`, App: `render`)
+* **Canonical Deployed Service URL:** `https://blueledger-backend-k4rg.onrender.com`
+* **Render Service ID:** `srv-dbfi3su7bikc73dld8c0` (Environment: `main - blueledger-backend`)
+* **Discovered via:** GitHub Deployment API (ID: `7329163577`, App: `render`)
 * **Initial Deployment Status:** The initial build failed prior to environment variable configuration because `DATABASE_URL` was required. Once `DATABASE_URL` was configured with the Supabase connection string, triggering the rebuild provisions the backend and applies all migrations automatically.
-* **Vercel API Proxy Updated:** Both `vercel.json` and `frontend/vercel.json` are pointed to `https://blueledger-backend-d9e5.onrender.com/api/:path*`.
+* **Vercel API Proxy Updated:** Both `vercel.json` and `frontend/vercel.json` are pointed to `https://blueledger-backend-k4rg.onrender.com/api/:path*`.
 
 ---
 
@@ -116,7 +116,7 @@ The frontend static SPA is configured in `vercel.json`:
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://blueledger-backend-d9e5.onrender.com/api/:path*"
+      "destination": "https://blueledger-backend-k4rg.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

@@ -26,7 +26,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://blueledger-backend-d9e5.onrender.com/api/:path*"
+      "destination": "https://blueledger-backend-k4rg.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
