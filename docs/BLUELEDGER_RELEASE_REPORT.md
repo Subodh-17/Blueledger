@@ -52,7 +52,7 @@ services:
     plan: free
     region: oregon
     buildCommand: npm --prefix backend ci
-    startCommand: node database/migrate.js && npm --prefix backend start
+    startCommand: npm --prefix backend start
     healthCheckPath: /health
     autoDeploy: true
     envVars:

@@ -18,7 +18,11 @@ async function migrate({ reset = false, pool: given } = {}) {
   console.log(`[migrate] Connecting to database: ${masked}`);
   const pool = given || new Pool(
     connectionString
-      ? { connectionString, ssl: !connectionString.includes("localhost") && !connectionString.includes("127.0.0.1") ? { rejectUnauthorized: false } : undefined }
+      ? {
+          connectionString,
+          ssl: !connectionString.includes("localhost") && !connectionString.includes("127.0.0.1") ? { rejectUnauthorized: false } : undefined,
+          connectionTimeoutMillis: 10000,
+        }
       : {
           host: process.env.DB_HOST || "localhost",
           port: Number(process.env.DB_PORT || 5432),
