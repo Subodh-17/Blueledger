@@ -75,14 +75,14 @@ services:
       - key: MALWARE_SCAN
         value: optional
       - key: EVIDENCE_ENCRYPTION
-        value: off
+        value: "off"
       - key: MAX_UPLOAD_MB
         value: "25"
 
 databases:
   - name: blueledger-db
     databaseName: blue_carbon_mrv
-    user: postgres
+    user: blueledger_user
     plan: starter
     region: oregon
 ```
