@@ -24,8 +24,8 @@ module.exports = {
   bcryptRounds: Number(env.BCRYPT_ROUNDS || 12),
   corsOrigins: (env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
   db: {
-    connectionString: env.DATABASE_URL || undefined,
-    ssl: env.DB_SSL === "true" || (env.DATABASE_URL && !env.DATABASE_URL.includes("localhost") && !env.DATABASE_URL.includes("127.0.0.1")) ? { rejectUnauthorized: false } : undefined,
+    connectionString: env.DATABASE_URL || env.POSTGRES_URL || env.SUPABASE_DATABASE_URL || undefined,
+    ssl: env.DB_SSL === "true" || ((env.DATABASE_URL || env.POSTGRES_URL || env.SUPABASE_DATABASE_URL) && !(env.DATABASE_URL || env.POSTGRES_URL || env.SUPABASE_DATABASE_URL).includes("localhost") && !(env.DATABASE_URL || env.POSTGRES_URL || env.SUPABASE_DATABASE_URL).includes("127.0.0.1")) ? { rejectUnauthorized: false } : undefined,
     host: env.DB_HOST || "localhost",
     port: Number(env.DB_PORT || 5432),
     database: env.DB_NAME || "blue_carbon_mrv",

@@ -10,10 +10,12 @@ req("dotenv").config({ path: path.join(BACKEND, ".env") });
 const { Pool } = req("pg");
 
 async function migrate({ reset = false, pool: given } = {}) {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.SUPABASE_DATABASE_URL;
   if (process.env.NODE_ENV === "production" && !connectionString && !process.env.DB_HOST) {
     throw new Error("DATABASE_URL is not set in production. Please configure your PostgreSQL connection string (e.g. Supabase URI) in the service environment variables.");
   }
+  const masked = connectionString ? connectionString.replace(/:[^:@]+@/, ":***@") : (process.env.DB_HOST || "localhost");
+  console.log(`[migrate] Connecting to database: ${masked}`);
   const pool = given || new Pool(
     connectionString
       ? { connectionString, ssl: !connectionString.includes("localhost") && !connectionString.includes("127.0.0.1") ? { rejectUnauthorized: false } : undefined }
